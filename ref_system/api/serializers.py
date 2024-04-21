@@ -6,7 +6,10 @@ from djoser.serializers import TokenCreateSerializer
 from rest_framework.exceptions import AuthenticationFailed, PermissionDenied, NotFound
 
 
-class SignupSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.ModelSerializer):
+    """ Сериализатор для регистрации польвателя.
+    Переопределение входных данных для сохранения в БД в единном формате.
+    """
     telephone_number = PhoneNumberField(region='RU')
 
     class Meta:
@@ -16,15 +19,23 @@ class SignupSerializer(serializers.ModelSerializer):
     from users.utils import create_confirmation_code
 
     def validate(self, data):
+        """ Валидация поля telephone_number. """
         if not data:
             raise ValidationError('необходимо ввести номер телефона.')
         return data
 
 
 class LoginUserSerializer(TokenCreateSerializer):
+    """
+    Сериализатор для работы с сущностью авторизации пользователя.
+    Реализовано:
+        Переопределение входных данных для входа получения токена.
+        Валидация краевых случаев.
+    """
     confirmation_code = serializers.CharField(required=False)
 
     def validate(self, data):
+        """ Валидация поля telephone_number. """
         confirmation_code = data.get('confirmation_code', None)
         data['telephone_number'] = '+7' + data['telephone_number'][-10:]
         try:
@@ -52,6 +63,11 @@ class LoginUserSerializer(TokenCreateSerializer):
 
 
 class AddInvationCodeToProfile(serializers.ModelSerializer):
+    """
+    Сериализатор для работы добавления
+    invite_code (кода пригласившего пользователя).
+    Реализован валидация краевых случаев.
+    """
     invitation_code = serializers.CharField(min_length=6, max_length=6)
 
     class Meta:
@@ -79,12 +95,18 @@ class AddInvationCodeToProfile(serializers.ModelSerializer):
 
 
 class ReferralSerializer(serializers.ModelSerializer):
+    """ Промежуточный сериализатор для получения объектов реферралов. """
     class Meta:
         model = CustomUserModel
         fields = ['telephone_number']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для получения объекта пользователя.
+    Определено новое поле для отображения списка пользователей реферраллов.
+    """
+
     all_referals = serializers.SerializerMethodField()
 
     class Meta:

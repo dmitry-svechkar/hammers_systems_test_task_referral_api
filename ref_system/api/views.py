@@ -1,4 +1,4 @@
-from api.serializers import (SignupSerializer, LoginUserSerializer,
+from api.serializers import (RegistrationSerializer, LoginUserSerializer,
                              AddInvationCodeToProfile, ProfileSerializer)
 from rest_framework import status
 from rest_framework.response import Response
@@ -13,7 +13,13 @@ from rest_framework.exceptions import PermissionDenied
 
 
 class RegistationViewSet(viewsets.GenericViewSet, CreateModelMixin):
-    serializer_class = SignupSerializer
+    """
+    Вью регистрации пользователя в системе
+    с последующей отправкой кода потверждения для входа.
+    Если пользователя нет в базе он создается,
+    если есть - генерируется и сохраняется в БД новый код потверждения.
+    """
+    serializer_class = RegistrationSerializer
     model = CustomUserModel
 
     def create(self, request, *args, **kwargs):
@@ -40,6 +46,15 @@ class RegistationViewSet(viewsets.GenericViewSet, CreateModelMixin):
 
 
 class LoginUserView(APIView):
+    """
+    Вью для получения токена из БД.
+    Пользователь проверяется в базе по номеру телефона,
+    затем по совпадению переданного кода и кода из БД.
+    При успехе возвращается токен.
+
+    Добавлена функциональность после 1 авторизации генерируется
+    индивидуальный реферальный код, который храниться в БД.
+    """
     serializer_class = LoginUserSerializer
 
     def post(self, request):
@@ -61,6 +76,12 @@ class ProfileViewSet(
     RetrieveModelMixin,
     UpdateModelMixin
 ):
+    """
+    Вью работающее с полями пользователя.
+    Обрабатывает GET для получения объекта пользователя.
+    Обрабатывает PUT, PATCH для внесения инвайт кода в свой профиль,
+    пригласившего его пользователя.
+    """
     queryset = CustomUserModel.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'telephone_number'
