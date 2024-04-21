@@ -37,7 +37,8 @@ class LoginUserSerializer(TokenCreateSerializer):
     def validate(self, data):
         """ Валидация поля telephone_number. """
         confirmation_code = data.get('confirmation_code', None)
-        data['telephone_number'] = '+7' + data['telephone_number'][-10:]
+        telephone_number = data.get('telephone_number',)
+        data['telephone_number'] = '+7' + telephone_number[-10:]
         try:
             user = CustomUserModel.objects.get(
                 telephone_number=data['telephone_number']
@@ -87,7 +88,7 @@ class AddInvationCodeToProfile(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         invitation_code = validated_data.get('invitation_code', None)
-        if invitation_code:
+        if instance.invitation_code:
             raise PermissionDenied('Вы уже указали код приглашения')
         instance.invitation_code = invitation_code
         instance.save()

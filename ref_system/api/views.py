@@ -9,7 +9,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import viewsets
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
 from rest_framework import permissions
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, MethodNotAllowed
 
 
 class RegistationViewSet(viewsets.GenericViewSet, CreateModelMixin):
@@ -33,7 +33,7 @@ class RegistationViewSet(viewsets.GenericViewSet, CreateModelMixin):
             existing_user.save()
             return Response(
                 {'confirmation_code': existing_user.confirmation_code},
-                status=status.HTTP_201_CREATED
+                status=status.HTTP_200_OK
             )
         else:
             user = serializer.save()
@@ -41,7 +41,7 @@ class RegistationViewSet(viewsets.GenericViewSet, CreateModelMixin):
             user.save()
             return Response(
                 {'confirmation_code': user.confirmation_code},
-                status=status.HTTP_200_OK
+                status=status.HTTP_201_CREATED
             )
 
 
@@ -85,14 +85,17 @@ class ProfileViewSet(
     queryset = CustomUserModel.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'telephone_number'
+    http_method_names = ['get', 'patch',]
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.request.method == 'GET':
             return ProfileSerializer
-        elif self.action == 'update':
+        if self.request.method == 'PATCH':
             return AddInvationCodeToProfile
         else:
             raise NotImplementedError
+
+    from rest_framework.decorators import action
 
     def update(self, request, *args, **kwargs):
         user = self.get_object()
