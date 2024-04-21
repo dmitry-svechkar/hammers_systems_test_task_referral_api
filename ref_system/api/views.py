@@ -1,15 +1,15 @@
-from api.serializers import (RegistrationSerializer, LoginUserSerializer,
-                             AddInvationCodeToProfile, ProfileSerializer)
-from rest_framework import status
+from rest_framework import permissions, status, viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.mixins import (CreateModelMixin, RetrieveModelMixin,
+                                   UpdateModelMixin)
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from users.models import CustomUserModel
 from users.utils import create_confirmation_code, generate_referal_code
-from rest_framework.views import APIView
-from rest_framework.authtoken.models import Token
-from rest_framework import viewsets
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, CreateModelMixin
-from rest_framework import permissions
-from rest_framework.exceptions import PermissionDenied, MethodNotAllowed
+
+from api.serializers import (AddInvationCodeToProfile, LoginUserSerializer,
+                             ProfileSerializer, RegistrationSerializer)
 
 
 class RegistationViewSet(viewsets.GenericViewSet, CreateModelMixin):

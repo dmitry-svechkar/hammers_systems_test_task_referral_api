@@ -1,9 +1,10 @@
+from djoser.serializers import TokenCreateSerializer
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
+from rest_framework.exceptions import (AuthenticationFailed, NotFound,
+                                       PermissionDenied)
 from rest_framework.serializers import ValidationError
 from users.models import CustomUserModel
-from djoser.serializers import TokenCreateSerializer
-from rest_framework.exceptions import AuthenticationFailed, PermissionDenied, NotFound
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
