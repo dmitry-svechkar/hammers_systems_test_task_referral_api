@@ -1,0 +1,14 @@
+SECRET_KEY=any_secret_key_of_django_project
+DEBUG=True
+
+#db В прод-среде подключена sqllite3:
+
+POSTGRES_USER=username
+POSTGRES_PASSWORD=pass
+POSTGRES_DB=name_db
+DB_HOST=db
+DB_PORT=5432
+
+CSRF_TRUSTED_ORIGINS =http://domain:port
+
+CORS_ORIGIN_WHITELIST =http://domain:port
