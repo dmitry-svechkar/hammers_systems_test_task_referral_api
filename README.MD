@@ -103,3 +103,21 @@ docker exec backend python manage.py сreatesuperuser
     "token": "django_token"
 }
 ```
+Эндпойнт api/profile/{telephone_number}
+Необходимо указать заголовок запроса: Authorization : Token <token>
+GET вернет ответ следующего формата
+```
+{
+  "reg_data": "2024-04-22",
+  "telephone_number": "string",
+  "user_referal_code": "string",
+  "all_referals": "string"
+}
+```
+PATCH api/profile/{telephone_number} запрос добавит код приглашения в профиль пользователя. Доступно только добавление в свой профиль.
+```
+{
+  "invitation_code": "string"
+}
+```
+
