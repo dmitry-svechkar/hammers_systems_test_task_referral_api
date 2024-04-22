@@ -14,7 +14,7 @@ from api.serializers import (AddInvationCodeToProfile, LoginUserSerializer,
 
 class RegistationViewSet(viewsets.GenericViewSet, CreateModelMixin):
     """
-    Вью регистрации пользователя в системе
+    View регистрации пользователя в системе
     с последующей отправкой кода потверждения для входа.
     Если пользователя нет в базе он создается,
     если есть - генерируется и сохраняется в БД новый код потверждения.
@@ -47,7 +47,7 @@ class RegistationViewSet(viewsets.GenericViewSet, CreateModelMixin):
 
 class LoginUserView(APIView):
     """
-    Вью для получения токена из БД.
+    View для получения токена из БД.
     Пользователь проверяется в базе по номеру телефона,
     затем по совпадению переданного кода и кода из БД.
     При успехе возвращается токен.
@@ -77,10 +77,10 @@ class ProfileViewSet(
     UpdateModelMixin
 ):
     """
-    Вью работающее с полями пользователя.
+    View работающее с полями пользователя.
     Обрабатывает GET для получения объекта пользователя.
-    Обрабатывает PUT, PATCH для внесения инвайт кода в свой профиль,
-    пригласившего его пользователя.
+    При PATCH запросе к энпойнту (api/profile/{tepephone_number})
+    можно добавить реферальную ссылку пригласившего пользователя.
     """
     queryset = CustomUserModel.objects.all()
     permission_classes = [permissions.IsAuthenticated]
